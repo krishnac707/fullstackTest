@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import api from "./../appConfig/index"
 
 const Register = () => {
 
     const [userData,setUserData] = useState({name:"",email:"",password:"",confirmPassword:"",role:"buyer",pin:"",number:""})
-
+    const router = useNavigate()
     const handleInput = (event) =>{
         setUserData({...userData,[event.target.name]:event.target.value})
     }
@@ -11,8 +13,25 @@ const Register = () => {
         setUserData({...userData,[event.target.name]:event.target.value})
     }
 
-    const formSubmit = (event) => {
-        
+    const formSubmit = async (event) => {
+        event.preventDefault();
+        if(userData.name || userData.email || userData.password || userData.confirmPassword || userData.pin || userData.role || userData.number){
+            if(userData.password === userData.confirmPassword){
+                try{
+                    const response = await api.post("/register",{userData})
+                    if(response.data.success){
+                        alert(response.data.message)
+                        router("/")
+                    }
+                }
+                catch(error){
+                    console.log(error);
+                }
+            }
+        }
+        else{
+            alert("all fields are mandetory")
+        }
     }
 
 
@@ -33,8 +52,8 @@ const Register = () => {
                 <option value="admin">Admin</option>
                 <option value="seller">Seller</option>
                 <option value="buyer">Buyer</option>
-            </select>
-            <label>Pin</label>
+            </select><br />
+            <label>Pin</label><br />
             <input type="number" name="pin"onChange={handleInput} /><br />
             <label>Number : </label><br />
             <input type="number" name="number" onChange={handleInput}/><br />

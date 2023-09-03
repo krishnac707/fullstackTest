@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 
 export const Register = async (req, res) => {
     try {
-        const { name, email, password, role, pin, number } = req.body;
+        const { name, email, password, role, pin, number } = req.body.userData;
         if (!name || !email || !password || !role || !pin || !number) return res.status(403).json({ success: false, message: "All Fields are mandetory" })
 
         const userEmail = await UserModal.find({ email: email })
